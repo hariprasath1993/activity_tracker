@@ -1,0 +1,4 @@
+
+class NotionDatabase():
+    CALL_ACTIVITY_DB = "1743520fbefd4621aba92aedf7fe5ac3"
+    MEETING_ACTIVITY_DB = "116609e67d7d8087a110e67e284e5292"
