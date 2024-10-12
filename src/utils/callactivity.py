@@ -1,4 +1,6 @@
 from notion_client import Client
+from utils.utils import Utils
+
 notion = Client(auth="secret_ep0rkEuMC94NKTW9h5JUIhjqJ0C7y0Ef8DzUiFXFucZ")
 
 
@@ -18,6 +20,20 @@ class callactivity():
         self.econ_participants = None
         self.customer_participants = None
 
+    def check_validity(self):
+        if not self.econ_participants:
+            return "No users selected"
+        if self.topic == '':
+            return "Topic cannot be empty"
+        if len(self.call_interaction.split()) < 2:
+            return "Minutes are less than 300 words"
+        if self.call_to_actions == []:
+            return "Call to action cannot be empty"
+        if not Utils.check_for_time_validity(self.date):
+            return 'You cannot log activities for dates more than 1 day in the past.'
+
+        return 'success'
+
     def update_call_activity(self):
         data = {
             "parent": {"database_id": callactivity.CALL_ACTIVITY_DB},
@@ -33,7 +49,7 @@ class callactivity():
                     ]
                 },
                 "Members": {
-                    "people": [{"id": user_id} for user_id in self.selected_user_ids]
+                    "people": [{"id": user_id} for user_id in self.econ_participants]
                 },
                 "Account": {
                     "relation": [
