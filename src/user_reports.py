@@ -6,7 +6,7 @@ from utils.database import NotionDatabase
 
 
 def filter_last_2_day_activities():
-    if total_activities is not None:
+    if not total_activities.empty:
         total_activities['created_time'] = pd.to_datetime(
             total_activities['created_time'])
         today = pd.Timestamp.now(tz='UTC')
@@ -20,7 +20,7 @@ def filter_last_2_day_activities():
 
 
 def filter_last_n_day_activities(n):
-    if total_activities is not None:
+    if not total_activities.empty:
         total_activities['created_time'] = pd.to_datetime(
             total_activities['created_time'])
         today = pd.Timestamp.now(tz='UTC')
