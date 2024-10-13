@@ -105,6 +105,7 @@ with st.container():
 
     elif activity_type == "Mail":
         with st.form(key="mail activity"):
+            
             mail_submit = st.form_submit_button("Submit Mail Activity")
 
     elif activity_type == "Scheduled Meeting":

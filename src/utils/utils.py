@@ -7,6 +7,7 @@ ALL_ACCOUNTS_DB = "ecd2b7e64ce54b4ca278877c764c1519"
 
 class Utils():
     ACCOUNT_INFO = {}
+    USERS = {}
 
     @staticmethod
     def get_notion_client():
@@ -16,10 +17,18 @@ class Utils():
 
     @staticmethod
     def get_workspace_users():
-        users = Utils.get_notion_client().users.list()  # Fetch all users in the workspace
+        if not Utils.USERS:
+            # Fetch all users in the workspace
+            Utils.USERS = Utils.get_notion_client().users.list()
         user_dict = {user['name']: user['id']
-                     for user in users['results'] if user['type'] == 'person'}
+                     for user in Utils.USERS['results'] if user['type'] == 'person'}
         return user_dict
+
+    @staticmethod
+    def get_user_id_from_name(name):
+        user_dict = {user['name']: user['id']
+                     for user in Utils.USERS['results'] if user['type'] == 'person'}
+        return user_dict.get(name)
 
     @staticmethod
     def fetch_all_accounts():
