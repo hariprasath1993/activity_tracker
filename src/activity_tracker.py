@@ -39,7 +39,7 @@ with st.container():
         date = st.date_input("Date", datetime.date.today())
 
 activity_type = st.selectbox(
-    "Activity Type", ['Mail', 'Call', 'Scheduled Meeting'])
+    "Activity Type", ['Call', 'Scheduled Meeting'])
 
 with st.container():
     cold_calling = None
