@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 def fetch_db_items(database_id, account_id):
     query = {
         "filter": {
-            "property": "Account",  # Assuming 'account_id' is the property in the Notion DB
+            "property": "Account",
             "relation": {
                 "contains": account_id
             }
@@ -28,17 +28,13 @@ def get_combined_records(db1_id, db2_id, account_id):
     activities = []
     call_records = fetch_db_items(db1_id, account_id)
     for record in call_records:
-        # Extract activity (from the 'Name' field)
         activity = record['properties']['Name']['title'][0]['plain_text'] if record['properties']['Name']['title'] else ""
 
-        # Extract created_time
         created_time = record['created_time']
 
-        # Extract content (from the 'Meeting Minutes' field)
         content = record['properties']['Meeting Minutes']['rich_text'][0][
             'plain_text'] if record['properties']['Meeting Minutes']['rich_text'] else ""
 
-        # Create a dictionary for each entry and append it to the output list
         activities.append({
             "Activity": "📞",
             "Subject": activity,

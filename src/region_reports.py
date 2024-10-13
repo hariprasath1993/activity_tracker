@@ -1,11 +1,14 @@
 import streamlit as st
 import pandas as pd
-import matplotlib.pyplot as plt
+import plotly.express as px
 from utils.utils import Utils
 
 st.header("Lead Classification")
 
+# Fetch accounts
 accounts = Utils.fetch_all_accounts()
+
+# Extract categories
 categories = []
 for account in accounts:
     category = account['properties']['Category']['select']
@@ -14,17 +17,21 @@ for account in accounts:
     else:
         categories.append('Uncategorised')
 
+# Create a DataFrame
 df = pd.DataFrame(categories, columns=['Category'])
 
-category_counts = df['Category'].value_counts().sort_index()
+# Count the occurrences of each category
+category_counts = df['Category'].value_counts().sort_index().reset_index()
+category_counts.columns = ['Category', 'Count']
 
+# Create an interactive bar chart using Plotly
+fig = px.bar(category_counts, x='Category', y='Count',
+             title='Account Category Distribution',
+             labels={'Category': 'Category', 'Count': 'Count'},
+             text='Count', color='Category')
 
-fig, ax = plt.subplots(figsize=(10, 6))
-category_counts.plot(kind='bar', color='skyblue', ax=ax)
-ax.set_title('Account Category Distribution')
-ax.set_xlabel('Category')
-ax.set_ylabel('Count')
-ax.set_xticklabels(category_counts.index, rotation=45, ha='right')
+# Update layout to rotate x-axis labels for better readability
+fig.update_layout(xaxis_tickangle=-45)
 
-# Display the plot in Streamlit
-st.pyplot(fig)
+# Display the Plotly chart in Streamlit
+st.plotly_chart(fig)
