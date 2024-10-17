@@ -71,12 +71,13 @@ class Utils():
         return account_info
 
     @staticmethod
-    def get_account_names():
-        if not Utils.ACCOUNT_INFO:
+    def get_account_names(fetch_from_server=True):
+        if fetch_from_server:
             Utils.ACCOUNT_INFO = Utils.get_account_names_and_ids()
 
-        account_names = [account['name'] for account in Utils.ACCOUNT_INFO]
-        return account_names
+        if Utils.ACCOUNT_INFO:
+            account_names = [account['name'] for account in Utils.ACCOUNT_INFO]
+            return account_names
 
     @staticmethod
     def get_account_id_from_name(account_name):

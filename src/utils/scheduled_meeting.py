@@ -64,64 +64,83 @@ class scheduled_meeting():
         self._add_meeting_minutes(new_page)
 
     def _add_meeting_minutes(self, new_page):
+        def chunk_text(text, chunk_size=2000):
+            return [text[i:i+chunk_size] for i in range(0, len(text), chunk_size)]
+
+        # Break meeting minutes and action items into chunks
+        meeting_minutes_chunks = chunk_text(self.meeting_minutes)
+        action_item_chunks = chunk_text(self.action_item)
+
+        children_blocks = []
+
+        # Add heading for Meeting Minutes
+        children_blocks.append({
+            "object": "block",
+            "type": "heading_2",
+            "heading_2": {
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": "Meeting Minutes"
+                        }
+                    }
+                ]
+            }
+        })
+
+        # Add Meeting Minutes content in chunks
+        for chunk in meeting_minutes_chunks:
+            children_blocks.append({
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "content": chunk
+                            }
+                        }
+                    ]
+                }
+            })
+
+        # Add heading for Action Items
+        children_blocks.append({
+            "object": "block",
+            "type": "heading_2",
+            "heading_2": {
+                "rich_text": [
+                    {
+                        "type": "text",
+                        "text": {
+                            "content": "Action Items"
+                        }
+                    }
+                ]
+            }
+        })
+
+        # Add Action Items content in chunks
+        for chunk in action_item_chunks:
+            children_blocks.append({
+                "object": "block",
+                "type": "paragraph",
+                "paragraph": {
+                    "rich_text": [
+                        {
+                            "type": "text",
+                            "text": {
+                                "content": chunk
+                            }
+                        }
+                    ]
+                }
+            })
+
+        # Append all children blocks to the page
         notion.blocks.children.append(
             block_id=new_page['id'],  # Use the ID of the new page
-            children=[
-                {
-                    "object": "block",
-                    "type": "heading_2",
-                    "heading_2": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": "Meeting Minutes"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": self.meeting_minutes
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "heading_2",
-                    "heading_2": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": "Action Items"
-                                }
-                            }
-                        ]
-                    }
-                },
-                {
-                    "object": "block",
-                    "type": "paragraph",
-                    "paragraph": {
-                        "rich_text": [
-                            {
-                                "type": "text",
-                                "text": {
-                                    "content": self.action_item
-                                }
-                            }
-                        ]
-                    }
-                }
-            ]
+            children=children_blocks
         )

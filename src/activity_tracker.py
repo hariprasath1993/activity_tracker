@@ -6,12 +6,16 @@ from utils.scheduled_meeting import scheduled_meeting
 from utils.utils import Utils
 import time
 
-st.title("Team Daily Activity Tracker")
-
 
 if 'meeting_submitted' not in st.session_state:
     st.session_state.meeting_submitted = False
 
+if 'account_names' not in st.session_state:
+    st.session_state.account_names = Utils.get_account_names(True)
+
+
+if 'refresh' not in st.session_state:
+    st.session_state.refresh = True
 
 if 'follow_up_tasks' not in st.session_state:
     st.session_state.follow_up_tasks = []
@@ -25,14 +29,24 @@ if 'submitted_tasks' not in st.session_state:
 
 user_dict = Utils.get_workspace_users()
 
+col1, col2 = st.columns([8, 2])
+with col1:
+    st.title("Team Daily Activity Tracker")
+with col2:
+    refresh = st.button("Refresh to fetch New Accounts")
+    if refresh:
+        st.session_state.account_names = Utils.get_account_names(True)
+
 with st.container():
     col1, col2 = st.columns(2)
     with col1:
         selected_users = st.multiselect("User", options=list(user_dict.keys()))
         selected_user_ids = [user_dict[user_name]
                              for user_name in selected_users]
+
         selected_account_name = st.selectbox(
-            "Select an Account", Utils.get_account_names())
+            "Select an Account", st.session_state.account_names)
+
         selected_account_id = Utils.get_account_id_from_name(
             selected_account_name)
     with col2:
@@ -105,7 +119,7 @@ with st.container():
 
     elif activity_type == "Mail":
         with st.form(key="mail activity"):
-            
+
             mail_submit = st.form_submit_button("Submit Mail Activity")
 
     elif activity_type == "Scheduled Meeting":
